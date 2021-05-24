@@ -24,8 +24,7 @@ int main(int argc, char *argv[]) {
     	return -1;
     }
 
-    proximity_params_t config;
-    config = device->params;
+    proximity_params_t* config = &(device->params);
     char message[128];
 
     int n = 0;
@@ -44,13 +43,13 @@ int main(int argc, char *argv[]) {
 
         int proximity = device->poll_sensor(device, precision);
 
-        if ((proximity < config.proximity.min)) {
+        if ((proximity < config->proximity.min)) {
             device->common.close(reinterpret_cast<hw_device_t *>(device));
             return 0;
         }
 
         snprintf(message, sizeof(message), "proximity @%2d: %4.2f", precision,
-            (100.0 * (proximity - config.proximity.min)) / config.proximity.range);
+            (100.0 * (proximity - config->proximity.min)) / config->proximity.range);
         ALOG(message);
     } 
 }
